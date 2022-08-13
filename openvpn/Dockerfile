@@ -1,8 +1,9 @@
 FROM ubuntu:22.10
 
-RUN apt update && apt -y install ca-certificates wget net-tools gnupg && \
-    wget -qO - https://as-repository.openvpn.net/as-repo-public.gpg | apt-key add - && \
-    echo "deb http://as-repository.openvpn.net/as/debian jammy main" > /etc/apt/sources.list.d/openvpn-as-repo.list && \
-    apt update && apt -y install openvpn-as && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt update && apt -y install ca-certificates curl net-tools gnupg && \
+    mkdir -p /dev/net && \
+    mknod /dev/net/tun c 10 200 && \
+    curl -O https://raw.githubusercontent.com/angristan/openvpn-install/master/openvpn-install.sh && \
+    chmod +x openvpn-install.sh && \
+    AUTO_INSTALL=y ./openvpn-install.sh && \
+    rm -f ./openvpn-install.sh
